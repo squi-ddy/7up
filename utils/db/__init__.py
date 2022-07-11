@@ -65,7 +65,6 @@ class GameDatabase:
         self._records[guild] = GameRecordWrapper(record=record, updated=True)
 
     async def save_records(self) -> None:
-        print("saving...", flush=True)
         to_update: List[Tuple] = []
         for record_wrapper in self._records.values():
             record = record_wrapper.record
