@@ -5,5 +5,5 @@ services:
     build: ./
     command: "python main.py"
     env_file:
-      - /opt/7up-runner/.env
+      - /opt/7up-runner/.bot.env
     restart: on-failure
