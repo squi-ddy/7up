@@ -3,11 +3,11 @@ import logging
 import discord
 import uvloop
 
-from cogs import Game
+from cogs import GameCog
 from utils import GameDatabase, loaded_settings
 
 
-def main():
+def main() -> None:
     logging.basicConfig(level=logging.INFO)
 
     uvloop.install()
@@ -17,13 +17,13 @@ def main():
     intents = discord.Intents.default()
     intents.message_content = True
 
-    bot = discord.Bot(intents=intents, debug_guilds=[789468266803625984])
+    bot = discord.Bot(intents=intents)
 
     @bot.event
-    async def on_ready():
+    async def on_ready() -> None:
         await bot.change_presence(activity=discord.Game(name="7up"))
 
-    bot.add_cog(Game(bot, database))
+    bot.add_cog(GameCog(bot, database))
 
     bot.run(loaded_settings.bot_token)
 

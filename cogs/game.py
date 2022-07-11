@@ -10,7 +10,7 @@ from utils import GameDatabase
 from utils.db import GameRecord
 
 
-class Game(commands.Cog):
+class GameCog(commands.Cog):
     bot: discord.Bot
     database: GameDatabase
     lock: asyncio.Lock
@@ -28,7 +28,7 @@ class Game(commands.Cog):
     async def ping(self, ctx: discord.ApplicationContext) -> None:
         await ctx.respond(f"Pong! Latency is {round(self.bot.latency * 1000)}ms!", ephemeral=True)
 
-    @commands.slash_command(name="bind", description="Bind 7up to a text channel.")
+    @commands.slash_command(name="bind", description="Bind 7up to a text channel.", guild_only=True)
     @discord.default_permissions(manage_channels=True)
     async def bind(
         self,
@@ -44,7 +44,7 @@ class Game(commands.Cog):
         await ctx.respond(f"Successfully bound to {channel.mention}!")
 
     @commands.slash_command(name="help", description="Information about 7up and its games")
-    async def help(self, ctx: discord.ApplicationContext):
+    async def help(self, ctx: discord.ApplicationContext) -> None:
         seven_up_help = discord.Embed(
             title="Hi! I'm 7up!",
             description="I love counting games like **7up** and **FizzBuzz**!\n"
@@ -62,7 +62,7 @@ class Game(commands.Cog):
 
         await paginator.respond(ctx.interaction, ephemeral=True)
 
-    @commands.slash_command(name="game", description="Choose the game you want to play!")
+    @commands.slash_command(name="game", description="Choose the game you want to play!", guild_only=True)
     @discord.commands.option("game_name", choices=[game.get_title() for game in GameSelector.games])
     async def choose_game(
         self,
@@ -149,9 +149,9 @@ class Game(commands.Cog):
                 )
 
     @tasks.loop(minutes=2.0)
-    async def save_data(self):
+    async def save_data(self) -> None:
         await self.database.save_records()
 
     @save_data.after_loop
-    async def after_save_data(self):
+    async def after_save_data(self) -> None:
         await self.database.save_records()

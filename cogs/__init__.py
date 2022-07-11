@@ -1,1 +1,3 @@
-from .game import Game
+from .game import GameCog
+
+__all__ = ["GameCog"]

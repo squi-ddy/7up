@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import asyncpg
 from pydantic.dataclasses import dataclass
@@ -29,8 +29,8 @@ class GameDatabase:
         self._settings = settings
         self._records = {}
 
-    async def _get_conn(self) -> asyncpg.Connection:
-        conn: asyncpg.Connection = await asyncpg.connect(  # type: ignore
+    async def _get_conn(self) -> asyncpg.Connection[Any]:
+        conn: asyncpg.Connection[Any] = await asyncpg.connect(  # type: ignore
             host=self._settings.db_host,
             user=self._settings.db_user,
             port=self._settings.db_port,
@@ -45,7 +45,7 @@ class GameDatabase:
             return self._records[guild].record
 
         # Retrieve from database
-        conn: asyncpg.Connection = await self._get_conn()
+        conn: asyncpg.Connection[Any] = await self._get_conn()
         record = await conn.fetchrow("SELECT * FROM data WHERE guild=$1", guild)
         await conn.close()
 
@@ -65,7 +65,7 @@ class GameDatabase:
         self._records[guild] = GameRecordWrapper(record=record, updated=True)
 
     async def save_records(self) -> None:
-        to_update: List[Tuple] = []
+        to_update: List[Tuple[Any, ...]] = []
         for record_wrapper in self._records.values():
             record = record_wrapper.record
 
@@ -80,7 +80,7 @@ class GameDatabase:
                     )
                 )
 
-        conn: asyncpg.Connection = await self._get_conn()
+        conn: asyncpg.Connection[Any] = await self._get_conn()
         statement = await conn.prepare(
             "INSERT INTO data(guild, channel, game_type, current_count, last_user) "
             + "VALUES ($1, $2, $3, $4, $5) "
