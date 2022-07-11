@@ -1,3 +1,5 @@
+import discord
+
 from .base import CountingGame, ValidationResult, number_matcher
 
 
@@ -9,7 +11,7 @@ class CountUpGame(CountingGame):
         #   The only number that can appear is the target number.
         numbers = number_matcher.findall(to_check)
 
-        if len(numbers) == 0:
+        if not len(numbers):
             return ValidationResult.UNRELATED
 
         number_str = str(number)
@@ -21,3 +23,16 @@ class CountUpGame(CountingGame):
     @classmethod
     def get_solution(cls, number: int) -> str:
         return str(number)
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Count Up"
+
+    @classmethod
+    def get_embed(cls) -> discord.Embed:
+        return discord.Embed(
+            title=cls.get_title(),
+            description="The simplest of them all! Just count upwards!\n"
+            + "Example: `1` `2` `3` `4` `5` `6` `7` `8` ...\n"
+            + "Only one catch: A person cannot say two numbers in a row!",
+        )

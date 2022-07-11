@@ -3,8 +3,8 @@ import logging
 import discord
 import uvloop
 
-from cogs.game import Game
-from utils import Database, loaded_settings
+from cogs import Game
+from utils import GameDatabase, loaded_settings
 
 
 def main():
@@ -12,7 +12,7 @@ def main():
 
     uvloop.install()
 
-    database = Database(loaded_settings)
+    database = GameDatabase(loaded_settings)
 
     intents = discord.Intents.default()
     intents.message_content = True

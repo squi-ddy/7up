@@ -1,4 +1,6 @@
-from .base import CountingGame, ValidationResult, up_matcher, number_matcher
+import discord
+
+from .base import CountingGame, ValidationResult, number_matcher, up_matcher
 
 
 class SevenUpGame(CountingGame):
@@ -21,7 +23,7 @@ class SevenUpGame(CountingGame):
         number_str = str(number)
         has_number = len(numbers) != 0 and all(entered_number == number_str for entered_number in numbers)
 
-        if not has_up and not has_number:
+        if not has_up and not len(numbers):
             # unrelated message
             return ValidationResult.UNRELATED
 
@@ -30,3 +32,17 @@ class SevenUpGame(CountingGame):
     @classmethod
     def get_solution(cls, number: int) -> str:
         return "Up" if cls.check_is_up(number) else str(number)
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Seven Up"
+
+    @classmethod
+    def get_embed(cls) -> discord.Embed:
+        return discord.Embed(
+            title=cls.get_title(),
+            description="The classic game of 7up!\n"
+            + "When a number divides `7`, or includes the number `7`, say `Up`!\n"
+            + "Example: `1` -> `1`, `7` -> `Up`, `17` -> `Up`\n"
+            + "Per usual: A person cannot say two numbers in a row!",
+        )

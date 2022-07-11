@@ -1,0 +1,23 @@
+name: 7up Bot Updater
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ master ]
+
+jobs:
+  Update:
+    runs-on: self-hosted
+
+    steps:
+      - name: Clone repository to local
+        uses: actions/checkout@v2
+
+      - name: Rebuild containers
+        run: sudo docker compose build
+
+      - name: Run docker containers
+        run: sudo docker compose up -d
+
+      - name: Prune old containers
+        run: sudo docker system prune -f

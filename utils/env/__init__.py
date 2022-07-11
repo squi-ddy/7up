@@ -18,5 +18,5 @@ loaded_settings = Settings(
     db_pass=os.environ.get("DB_PASS", ""),
     db_user=os.environ.get("DB_USER", ""),
     db_name=os.environ.get("DB_NAME", ""),
-    bot_token=os.environ.get("BOT_TOKEN", "")
+    bot_token=os.environ.get("BOT_TOKEN", ""),
 )

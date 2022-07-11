@@ -1,2 +1,2 @@
-from .db import Database
-from .env import loaded_settings, Settings
+from .db import GameDatabase
+from .env import Settings, loaded_settings

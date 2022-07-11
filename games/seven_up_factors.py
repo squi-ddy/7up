@@ -1,6 +1,8 @@
 from typing import List
 
-from games import SevenUpHardGame
+import discord
+
+from .seven_up_hard import SevenUpHardGame
 
 
 # Exactly the same as SevenUpHard, except with a modified check_number_up
@@ -27,3 +29,20 @@ class SevenUpFactorsGame(SevenUpHardGame):
                 factor //= 10
 
         return number_up
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Seven Up (Factors Mode)"
+
+    @classmethod
+    def get_embed(cls) -> discord.Embed:
+        return discord.Embed(
+            title=cls.get_title(),
+            description="An extreme, math-nerd version of 7up!\n"
+            + "To determine what to say, first, factorise the number.\n"
+            + "Check how many times the number `7` appears in this factor list.\n"
+            + "That translates to how many times you should say `Up`!\n"
+            + "Example: `1` -> `1`, `7` -> `Up`, `14` -> `Up`, "
+            + "`49` -> `Up`, `77` -> `Up Up Up`\n"
+            + "Per usual: A person cannot say two numbers in a row!",
+        )

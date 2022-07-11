@@ -2,7 +2,9 @@ from __future__ import annotations
 
 import re
 from abc import ABC, abstractmethod
-from enum import auto, IntEnum, unique
+from enum import IntEnum, auto, unique
+
+import discord
 
 
 @unique
@@ -25,6 +27,16 @@ class CountingGame(ABC):
     @classmethod
     @abstractmethod
     def get_solution(cls, number: int) -> str:
+        pass
+
+    @classmethod
+    @abstractmethod
+    def get_title(cls) -> str:
+        pass
+
+    @classmethod
+    @abstractmethod
+    def get_embed(cls) -> discord.Embed:
         pass
 
 
