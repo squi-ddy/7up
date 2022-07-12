@@ -42,7 +42,7 @@ class Paginator(nextcord.ui.View):
         self.bot = bot
         self.page = 0
 
-        if self.bot.user is None or self.bot.user.avatar is None:
+        if self.bot.user is None or self.bot.user.display_avatar is None:
             raise ValueError("Invalid bot avatar")
 
         if self.footer_type != FooterType.NONE:
@@ -53,7 +53,7 @@ class Paginator(nextcord.ui.View):
                     text=f"Page {i + 1} of {len(self.embeds)}"
                     if self.footer_type == FooterType.PAGE_NUMBER
                     else "\u200b",
-                    icon_url=self.bot.user.avatar.url if self.footer_bot_icon else nextcord.Embed.Empty,
+                    icon_url=self.bot.user.display_avatar.url if self.footer_bot_icon else nextcord.Embed.Empty,
                 )
 
     async def start(self) -> None:
@@ -103,7 +103,7 @@ class Paginator(nextcord.ui.View):
         else:
             await interaction.response.send_message("This is not for you!️", ephemeral=True)
 
-    @nextcord.ui.button(emoji="❌", style=nextcord.ButtonStyle.red)
+    @nextcord.ui.button(emoji="🗑️", style=nextcord.ButtonStyle.red)
     async def delete(self, _button: nextcord.ui.Button[Any], interaction: nextcord.Interaction) -> None:
         if interaction.user is None:
             return

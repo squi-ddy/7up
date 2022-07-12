@@ -3,6 +3,7 @@ aiohttp==3.8.1
 aiosignal==1.2.0
 async-timeout==4.0.2
 asyncpg==0.25.0
+asyncpg-stubs==0.25.4
 attrs==21.4.0
 Brotli==1.0.9
 cchardet==2.1.7
