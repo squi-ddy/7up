@@ -1,4 +1,4 @@
-import discord
+from nextcord import Embed
 
 from .base import CountingGame, ValidationResult, number_matcher, up_matcher
 
@@ -38,8 +38,8 @@ class SevenUpGame(CountingGame):
         return "Seven Up"
 
     @classmethod
-    def get_embed(cls) -> discord.Embed:
-        return discord.Embed(
+    def get_embed(cls) -> Embed:
+        return Embed(
             title=cls.get_title(),
             description="The classic game of 7up!\n"
             + "When a number divides `7`, or includes the number `7`, say `Up`!\n"

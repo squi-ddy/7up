@@ -1,21 +1,19 @@
 import asyncio
-from typing import List, Optional, Type, Union
+from typing import List, Optional, Type
 
-import discord
-from discord.ext import commands, pages, tasks
+import nextcord
+from nextcord.ext import commands, tasks
 
-from games import CountingGame, GameSelector
-from games.base import ValidationResult
-from utils import GameDatabase
-from utils.db import GameRecord
+from games import CountingGame, GameSelector, ValidationResult
+from utils import FooterType, GameDatabase, GameRecord, Paginator
 
 
 class GameCog(commands.Cog):
-    bot: discord.Bot
+    bot: commands.Bot
     database: GameDatabase
     lock: asyncio.Lock
 
-    def __init__(self, bot: discord.Bot, database: GameDatabase):
+    def __init__(self, bot: commands.Bot, database: GameDatabase):
         self.bot = bot
         self.database = database
         self.lock = asyncio.Lock()
@@ -24,28 +22,36 @@ class GameCog(commands.Cog):
     def cog_unload(self) -> None:
         self.save_data.cancel()
 
-    @commands.slash_command(name="ping", description="Pong!")
-    async def ping(self, ctx: discord.ApplicationContext) -> None:
-        await ctx.respond(f"Pong! Latency is {round(self.bot.latency * 1000)}ms!", ephemeral=True)
+    @nextcord.slash_command(name="ping", description="Pong!")
+    async def ping(self, interaction: nextcord.Interaction) -> None:
+        await interaction.response.send_message(f"Pong! Latency is {round(self.bot.latency * 1000)}ms!", ephemeral=True)
 
-    @commands.slash_command(name="bind", description="Bind 7up to a text channel.", guild_only=True)
-    @discord.default_permissions(manage_channels=True)
+    @nextcord.slash_command(
+        name="bind",
+        description="Bind 7up to a text channel.",
+        dm_permission=False,
+        default_member_permissions=nextcord.Permissions(manage_channels=True),
+    )
     async def bind(
         self,
-        ctx: discord.ApplicationContext,
+        interaction: nextcord.Interaction,
         *,
-        channel: Optional[discord.TextChannel] = None,
+        channel: nextcord.abc.GuildChannel,
     ) -> None:
-        channel = channel or ctx.channel
+        if not interaction.guild:
+            return
 
         async with self.lock:
-            await self.database.set_record(GameRecord(guild=ctx.guild.id, channel=channel.id))
+            await self.database.add_record(GameRecord(guild=interaction.guild.id, channel=channel.id))
 
-        await ctx.respond(f"Successfully bound to {channel.mention}!")
+        await interaction.response.send_message(f"Successfully bound to {channel.mention}!")
 
-    @commands.slash_command(name="help", description="Information about 7up and its games")
-    async def help(self, ctx: discord.ApplicationContext) -> None:
-        seven_up_help = discord.Embed(
+    @nextcord.slash_command(name="help", description="Information about 7up and its games")
+    async def help(self, interaction: nextcord.Interaction) -> None:
+        if interaction.user is None:
+            return
+
+        seven_up_help = nextcord.Embed(
             title="Hi! I'm 7up!",
             description="I love counting games like **7up** and **FizzBuzz**!\n"
             + "Click through the pages to see what games I have on offer!\n"
@@ -53,44 +59,57 @@ class GameCog(commands.Cog):
             + "Bind me to a channel with `/bind`, and pick a game with `/game`!",
         )
 
-        paginator_pages: List[Union[List[discord.Embed], discord.Embed]] = [seven_up_help]
+        paginator_pages: List[nextcord.Embed] = [seven_up_help]
 
         for game in GameSelector.games:
             paginator_pages.append(game.get_embed())
 
-        paginator = pages.Paginator(pages=paginator_pages)
+        message = await interaction.response.send_message(embed=paginator_pages[0], ephemeral=True)
+        paginator = Paginator(
+            message=message,
+            embeds=paginator_pages,
+            author=interaction.user,
+            bot=self.bot,
+            footer_type=FooterType.PAGE_NUMBER,
+            footer_bot_icon=True,
+        )
 
-        await paginator.respond(ctx.interaction, ephemeral=True)
+        await paginator.start()
 
-    @commands.slash_command(name="game", description="Choose the game you want to play!", guild_only=True)
-    @discord.commands.option("game_name", choices=[game.get_title() for game in GameSelector.games])
+    @nextcord.slash_command(
+        name="game",
+        description="Choose the game you want to play!",
+        dm_permission=False,
+        default_member_permissions=nextcord.Permissions(manage_channels=True),
+    )
     async def choose_game(
         self,
-        ctx: discord.ApplicationContext,
+        interaction: nextcord.Interaction,
         *,
-        game_name: str,
+        game_name: str = nextcord.SlashOption(choices=[game.get_title() for game in GameSelector.games]),
     ) -> None:
+        if interaction.guild is None or interaction.channel is None:
+            return
+
         game: Type[CountingGame] = GameSelector.get_game_by_name(game_name)
 
         async with self.lock:
-            record: Optional[GameRecord] = await self.database.get_record(ctx.guild.id)
+            record: Optional[GameRecord] = await self.database.get_record(interaction.guild.id)
 
             if record is None:
-                await ctx.respond("Bind me to a channel first, silly!", ephemeral=True)
+                await interaction.response.send_message("Bind me to a channel first, silly!", ephemeral=True)
                 return
 
-            if record.channel != ctx.channel.id:
-                await ctx.respond("Talk to me in my bound channel, please.", ephemeral=True)
+            if record.channel != interaction.channel.id:
+                await interaction.response.send_message("Talk to me in my bound channel, please.", ephemeral=True)
                 return
 
-            await self.database.set_record(
-                GameRecord(guild=ctx.guild.id, channel=record.channel, game_type=GameSelector.get_id_by_game(game))
-            )
+            record.game_type = GameSelector.get_id_by_game(game)
 
-        await ctx.respond(f"Success! You're now playing {game_name}!")
+        await interaction.response.send_message(f"Success! You're now playing {game_name}!")
 
     @commands.Cog.listener()
-    async def on_message(self, message: discord.Message) -> None:
+    async def on_message(self, message: nextcord.Message) -> None:
         if message.author.bot or not message.guild:
             return
 
@@ -111,8 +130,8 @@ class GameCog(commands.Cog):
                 await message.add_reaction("❌")
 
                 await message.reply(
-                    embed=discord.Embed(
-                        colour=discord.Colour.dark_red(),
+                    embed=nextcord.Embed(
+                        colour=nextcord.Colour.dark_red(),
                         title="Loser!",
                         description=f"{message.author.mention} lost the game at {record.current_count}!",
                     ).add_field(
@@ -127,7 +146,7 @@ class GameCog(commands.Cog):
                     mention_author=True,
                 )
 
-                await self.database.set_record(
+                await self.database.add_record(
                     GameRecord(
                         guild=record.guild,
                         channel=record.channel,
@@ -138,15 +157,8 @@ class GameCog(commands.Cog):
             else:
                 await message.add_reaction("✅")
 
-                await self.database.set_record(
-                    GameRecord(
-                        guild=record.guild,
-                        channel=record.channel,
-                        game_type=record.game_type,
-                        current_count=record.current_count + 1,
-                        last_user=message.author.id,
-                    )
-                )
+                record.current_count += 1
+                record.last_user = message.author.id
 
     @tasks.loop(minutes=2.0)
     async def save_data(self) -> None:

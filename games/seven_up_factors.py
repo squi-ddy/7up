@@ -1,6 +1,6 @@
-from typing import List
+from typing import List, Sequence
 
-import discord
+from nextcord import Embed
 
 from .seven_up_hard import SevenUpHardGame
 
@@ -8,7 +8,7 @@ from .seven_up_hard import SevenUpHardGame
 # Exactly the same as SevenUpHard, except with a modified check_number_up
 class SevenUpFactorsGame(SevenUpHardGame):
     @classmethod
-    def factorise(cls, number: int) -> List[int]:
+    def factorise(cls, number: int) -> Sequence[int]:
         factors: List[int] = []
         i: int = 1
         while i * i <= number:
@@ -35,8 +35,8 @@ class SevenUpFactorsGame(SevenUpHardGame):
         return "Seven Up (Factors Mode)"
 
     @classmethod
-    def get_embed(cls) -> discord.Embed:
-        return discord.Embed(
+    def get_embed(cls) -> Embed:
+        return Embed(
             title=cls.get_title(),
             description="An extreme, math-nerd version of 7up!\n"
             + "To determine what to say, first, factorise the number.\n"

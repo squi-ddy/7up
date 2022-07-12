@@ -3,10 +3,13 @@ from __future__ import annotations
 import re
 from abc import ABC, abstractmethod
 from enum import IntEnum, auto, unique
+from typing import TYPE_CHECKING
 
-import discord
+if TYPE_CHECKING:
+    from nextcord import Embed
 
 
+# noinspection PyArgumentList
 @unique
 class ValidationResult(IntEnum):
     ACCEPT = auto()
@@ -36,7 +39,7 @@ class CountingGame(ABC):
 
     @classmethod
     @abstractmethod
-    def get_embed(cls) -> discord.Embed:
+    def get_embed(cls) -> Embed:
         pass
 
 

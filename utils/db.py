@@ -1,12 +1,12 @@
+from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple
 
 import asyncpg
-from pydantic.dataclasses import dataclass
 
 from utils.env import Settings
 
 
-@dataclass(frozen=True)
+@dataclass(kw_only=True)
 class GameRecord:
     guild: int
     channel: int
@@ -14,11 +14,36 @@ class GameRecord:
     current_count: int = 1
     last_user: Optional[int] = None
 
+    def __setattr__(self, key: str, value: Any) -> None:
+        self.on_change()
+        super(GameRecord, self).__setattr__(key, value)
 
-@dataclass
+    # To be "overridden"
+    def on_change(self) -> None:
+        pass
+
+
 class GameRecordWrapper:
-    record: Optional[GameRecord] = None
+    _record: GameRecord
     updated: bool = False
+
+    def __init__(self, record: GameRecord, updated: bool = False):
+        self._record = record
+        self.updated = updated
+        self._record.on_change = self._on_record_change  # type: ignore
+
+    def _on_record_change(self) -> None:
+        self.updated = True
+
+    @property
+    def record(self) -> GameRecord:
+        return self._record
+
+    @record.setter
+    def record(self, value: GameRecord) -> None:
+        self.updated = True
+        self._record = value
+        self._record.on_change = self._on_record_change  # type: ignore
 
 
 class GameDatabase:
@@ -49,18 +74,21 @@ class GameDatabase:
         record = await conn.fetchrow("SELECT * FROM data WHERE guild=$1", guild)
         await conn.close()
 
-        game_record: Optional[GameRecord] = GameRecord(**record) if record else None
+        if record is None:
+            return None
+
+        game_record: GameRecord = GameRecord(**record)
 
         self._records[guild] = GameRecordWrapper(record=game_record)
 
         return game_record
 
-    async def set_record(self, record: GameRecord) -> None:
+    async def add_record(self, record: GameRecord) -> None:
         guild = record.guild
 
         if guild in self._records:
             self._records[guild].record = record
-            self._records[guild].updated = True
+            return
 
         self._records[guild] = GameRecordWrapper(record=record, updated=True)
 
@@ -69,7 +97,7 @@ class GameDatabase:
         for record_wrapper in self._records.values():
             record = record_wrapper.record
 
-            if record_wrapper.updated and record is not None:
+            if record_wrapper.updated:
                 to_update.append(
                     (
                         record.guild,

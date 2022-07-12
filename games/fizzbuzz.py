@@ -1,4 +1,4 @@
-import discord
+from nextcord import Embed
 
 from .base import CountingGame, ValidationResult, buzz_matcher, fizz_matcher, number_matcher
 
@@ -37,8 +37,8 @@ class FizzBuzzGame(CountingGame):
         return "FizzBuzz"
 
     @classmethod
-    def get_embed(cls) -> discord.Embed:
-        return discord.Embed(
+    def get_embed(cls) -> Embed:
+        return Embed(
             title=cls.get_title(),
             description="The classic game of FizzBuzz!\n"
             + "When a number divides `3`, say `Fizz`!\n"

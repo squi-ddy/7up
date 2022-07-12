@@ -1,7 +1,8 @@
 import logging
 
-import discord
+import nextcord
 import uvloop
+from nextcord.ext import commands
 
 from cogs import GameCog
 from utils import GameDatabase, loaded_settings
@@ -14,14 +15,15 @@ def main() -> None:
 
     database = GameDatabase(loaded_settings)
 
-    intents = discord.Intents.default()
+    intents = nextcord.Intents.default()
+    # noinspection PyDunderSlots,PyUnresolvedReferences
     intents.message_content = True
 
-    bot = discord.Bot(intents=intents)
+    bot: commands.Bot = commands.Bot(intents=intents)  # type: ignore
 
     @bot.event
     async def on_ready() -> None:
-        await bot.change_presence(activity=discord.Game(name="7up"))
+        await bot.change_presence(activity=nextcord.Game(name="7up"))
 
     bot.add_cog(GameCog(bot, database))
 

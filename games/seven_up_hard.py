@@ -1,4 +1,4 @@
-import discord
+from nextcord import Embed
 
 from .base import CountingGame, ValidationResult, number_matcher, up_matcher
 
@@ -38,8 +38,8 @@ class SevenUpHardGame(CountingGame):
         return "Seven Up (Hard Mode)"
 
     @classmethod
-    def get_embed(cls) -> discord.Embed:
-        return discord.Embed(
+    def get_embed(cls) -> Embed:
+        return Embed(
             title=cls.get_title(),
             description="A harder version of 7up!\n"
             + "How many times to say `Up` is now based on how many "

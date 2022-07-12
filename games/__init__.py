@@ -1,6 +1,6 @@
 from typing import List, Type
 
-from .base import CountingGame
+from .base import CountingGame, ValidationResult
 from .count_up import CountUpGame
 from .fizzbuzz import FizzBuzzGame
 from .seven_up import SevenUpGame
@@ -15,6 +15,7 @@ __all__ = [
     "SevenUpFactorsGame",
     "SevenUpHardGame",
     "GameSelector",
+    "ValidationResult",
 ]
 
 

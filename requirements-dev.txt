@@ -6,7 +6,7 @@ asyncpg==0.25.0
 asyncpg-stubs==0.25.4
 attrs==21.4.0
 black==22.6.0
-brotlipy==0.7.0
+Brotli==1.0.9
 cchardet==2.1.7
 cffi==1.15.1
 charset-normalizer==2.1.0
@@ -19,14 +19,13 @@ mccabe==0.6.1
 multidict==6.0.2
 mypy==0.961
 mypy-extensions==0.4.3
+nextcord==2.0.0
 orjson==3.7.7
 pathspec==0.9.0
 platformdirs==2.5.2
-py-cord==2.0.0
 pycares==4.2.1
 pycodestyle==2.8.0
 pycparser==2.21
-pydantic==1.9.1
 pyflakes==2.4.0
 tomli==2.0.1
 typing_extensions==4.3.0

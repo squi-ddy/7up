@@ -1,4 +1,4 @@
-import discord
+from nextcord import Embed
 
 from .base import CountingGame, ValidationResult, number_matcher
 
@@ -29,8 +29,8 @@ class CountUpGame(CountingGame):
         return "Count Up"
 
     @classmethod
-    def get_embed(cls) -> discord.Embed:
-        return discord.Embed(
+    def get_embed(cls) -> Embed:
+        return Embed(
             title=cls.get_title(),
             description="The simplest of them all! Just count upwards!\n"
             + "Example: `1` `2` `3` `4` `5` `6` `7` `8` ...\n"
