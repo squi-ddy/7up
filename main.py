@@ -23,7 +23,7 @@ def main() -> None:
 
     @bot.event
     async def on_ready() -> None:
-        await bot.change_presence(activity=nextcord.Game(name="7up"))
+        await bot.change_presence(activity=nextcord.Game(name=f"7up in {len(bot.guilds)} servers!"))
 
     bot.add_cog(GameCog(bot, database))
 
