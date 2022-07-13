@@ -17,7 +17,7 @@ games_to_test = [
     FizzBuzzGame,
 ]
 
-messages = [
+ignore_messages = [
     "I love cream cheese!",
     "<@832964372803354655>",
     "<:drewimo:993167758500048916>",
@@ -44,7 +44,7 @@ def test_games_ignore():
     # Test on unrelated message
     for game in games_to_test:
         for i in range(1, 1000):
-            for message in messages:
+            for message in ignore_messages:
                 assert game.is_valid(message, i) == ValidationResult.UNRELATED
 
 
