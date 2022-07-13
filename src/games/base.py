@@ -44,7 +44,7 @@ class CountingGame(ABC):
         pass
 
 
-up_matcher = regex.compile("up", regex.IGNORECASE)
+up_matcher = regex.compile(r"(?<!`)up(?!`)", regex.IGNORECASE)
 number_matcher = regex.compile(r"(?<=[a-z !?.,\-^*]|^)(?P<number>[0-9]+)(?=[a-z !?.,\-^*]|$)", regex.IGNORECASE)
-fizz_matcher = regex.compile("fizz", regex.IGNORECASE)
-buzz_matcher = regex.compile("buzz", regex.IGNORECASE)
+fizz_matcher = regex.compile(r"(?<!`)fizz(?!`)", regex.IGNORECASE)
+buzz_matcher = regex.compile(r"(?<!`)buzz(?!`)", regex.IGNORECASE)
