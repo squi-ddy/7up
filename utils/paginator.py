@@ -31,7 +31,7 @@ class Paginator(nextcord.ui.View):
         embed_footer_type: FooterType = FooterType.NONE,
         embed_footer_bot_icon: bool = False,
         embed_colour: nextcord.Colour = nextcord.Colour.blurple(),
-        __format_embeds: bool = True
+        _format_embeds: bool = True,
     ) -> None:
         super(Paginator, self).__init__(timeout=timeout)
         self.message = message
@@ -43,7 +43,7 @@ class Paginator(nextcord.ui.View):
         if self.bot.user is None:
             raise ValueError("Invalid bot")
 
-        if __format_embeds:
+        if _format_embeds:
             for i, embed in enumerate(self.embeds):
                 if embed_footer_type == FooterType.TIMESTAMP:
                     embed.timestamp = datetime.datetime.utcnow()
@@ -59,11 +59,7 @@ class Paginator(nextcord.ui.View):
         await self.message.edit(
             embed=self.embeds[0],
             view=Paginator(
-                message=self.message,
-                embeds=self.embeds,
-                author=self.author,
-                bot=self.bot,
-                __format_embeds=False
+                message=self.message, embeds=self.embeds, author=self.author, bot=self.bot, _format_embeds=False
             ),
         )
 
