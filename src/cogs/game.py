@@ -165,7 +165,7 @@ class GameCog(commands.Cog):
                         name="Error Diagnosis:",
                         value=(
                             f"Should have said `{game.get_solution(record.current_count)}`, instead said "
-                            f"`{message.content}` "
+                            f"`{nextcord.utils.escape_mentions(nextcord.utils.escape_markdown(message.content))}` "
                         )
                         if validation == ValidationResult.REJECT
                         else "Should have waited their turn",
