@@ -3,7 +3,7 @@ version: "3.8"
 services:
   discord-bot:
     build: ./
-    command: "python main.py"
+    command: "python src/main.py"
     env_file:
       - /opt/7up-runner/.bot.env
     restart: on-failure
