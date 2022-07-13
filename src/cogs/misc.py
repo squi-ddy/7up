@@ -15,9 +15,9 @@ class MiscCog(commands.Cog):
         await self.bot.change_presence(activity=nextcord.Game(name=f"7up in {len(self.bot.guilds)} servers!"))
 
     @commands.Cog.listener()
-    async def on_guild_join(self) -> None:
+    async def on_guild_join(self, _guild: nextcord.Guild) -> None:
         await self.bot.change_presence(activity=nextcord.Game(name=f"7up in {len(self.bot.guilds)} servers!"))
 
     @commands.Cog.listener()
-    async def on_guild_remove(self) -> None:
+    async def on_guild_remove(self, _guild: nextcord.Guild) -> None:
         await self.bot.change_presence(activity=nextcord.Game(name=f"7up in {len(self.bot.guilds)} servers!"))
