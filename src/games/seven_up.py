@@ -19,7 +19,7 @@ class SevenUpGame(CountingGame):
         is_number = not is_up
 
         has_up = up_matcher.search(to_check) is not None
-        numbers = number_matcher.findall(to_check)
+        numbers = [entered_number.group("number") for entered_number in number_matcher.finditer(to_check)]
         number_str = str(number)
         has_number = len(numbers) != 0 and all(entered_number == number_str for entered_number in numbers)
 

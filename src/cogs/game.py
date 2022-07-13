@@ -65,7 +65,8 @@ class GameCog(commands.Cog):
             description="I love counting games like **7up** and **FizzBuzz**!\n"
             + "Click through the pages to see what games I have on offer!\n"
             + "I've sorted them in difficulty order, so pick what you like best!\n"
-            + "Bind me to a channel with `/bind`, and pick a game with `/game`!",
+            + "Bind me to a channel with `/bind`, and pick a game with `/game`!\n\n"
+            + "By the way, use backticks (`) to quote numbers, and I'll ignore them.",
         )
 
         paginator_pages: List[nextcord.Embed] = [seven_up_help]

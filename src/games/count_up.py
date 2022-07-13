@@ -9,7 +9,7 @@ class CountUpGame(CountingGame):
         # Check if this string satisfies constraints for this number.
         # Rules:
         #   The only number that can appear is the target number.
-        numbers = number_matcher.findall(to_check)
+        numbers = [entered_number.group("number") for entered_number in number_matcher.finditer(to_check)]
 
         if not len(numbers):
             return ValidationResult.UNRELATED

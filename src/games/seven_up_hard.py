@@ -23,9 +23,11 @@ class SevenUpHardGame(CountingGame):
         is_number = not number_up
 
         number_up_in_str = len(up_matcher.findall(to_check))
-        numbers = number_matcher.findall(to_check)
+        numbers = [entered_number.group("number") for entered_number in number_matcher.finditer(to_check)]
         number_str = str(number)
-        has_number = len(numbers) != 0 and all(entered_number == number_str for entered_number in numbers)
+        has_number = len(number_matcher.findall(to_check)) != 0 and all(
+            entered_number == number_str for entered_number in numbers
+        )
 
         if not len(numbers) and not number_up_in_str:
             # unrelated message

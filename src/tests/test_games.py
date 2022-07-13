@@ -17,6 +17,16 @@ games_to_test = [
     FizzBuzzGame,
 ]
 
+messages = [
+    "I love cream cheese!",
+    "<@832964372803354655>",
+    "<:drewimo:993167758500048916>",
+    "<#995972091759300629>",
+    ":1:",
+    "This is a discussion about `7`",
+    "`1524`",
+]
+
 
 def test_games_solutions():
     # Test on correct solutions
@@ -27,10 +37,10 @@ def test_games_solutions():
 
 def test_games_ignore():
     # Test on unrelated message
-    message = "I love cream cheese!"
     for game in games_to_test:
         for i in range(1, 1000):
-            assert game.is_valid(message, i) == ValidationResult.UNRELATED
+            for message in messages:
+                assert game.is_valid(message, i) == ValidationResult.UNRELATED
 
 
 def test_games_help():
