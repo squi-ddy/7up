@@ -75,7 +75,7 @@ class GameCog(commands.Cog):
             embed: nextcord.Embed = game.get_embed()
 
             if i == game_type:
-                embed.add_field(name="Currently selected!", value="", inline=False)
+                embed.description += "\n**Currently selected!**"
 
             paginator_pages.append(embed)
 
