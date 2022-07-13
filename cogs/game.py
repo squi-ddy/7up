@@ -75,7 +75,7 @@ class GameCog(commands.Cog):
             embed: nextcord.Embed = game.get_embed()
 
             if i == game_type and embed.description != nextcord.Embed.Empty:
-                embed.description += "\n\n**Currently selected!**"  # type: ignore
+                embed.description += "\n\n***This game is currently selected!***"  # type: ignore
 
             paginator_pages.append(embed)
 
