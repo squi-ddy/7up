@@ -170,13 +170,7 @@ class GameCog(commands.Cog):
                     mention_author=True,
                 )
 
-                await self.database.set_record(
-                    GameRecord(
-                        guild=record.guild,
-                        channel=record.channel,
-                        game_type=record.game_type,
-                    )
-                )
+                record.reset_game()
 
             else:
                 await message.add_reaction("✅")
