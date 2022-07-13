@@ -45,7 +45,9 @@ class CountingGame(ABC):
 
 
 def get_matcher(to_match: str) -> regex.Pattern[Any]:
-    return regex.compile(rf"(?<!`.*){to_match}(?!.*`)", regex.IGNORECASE)
+    return regex.compile(
+        rf"(?<!^[^`]*(`[^`]*`[^`]*)*`[^`]*){to_match}", regex.IGNORECASE
+    )  # kinda flawed but good enough
 
 
 up_matcher = get_matcher("up")
