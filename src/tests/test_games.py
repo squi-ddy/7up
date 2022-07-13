@@ -29,6 +29,7 @@ messages = [
     "`fizz`",
     "`buzz`",
     "`up`",
+    "`77 fizz buzz up`",
 ]
 
 

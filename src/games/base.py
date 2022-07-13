@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from enum import IntEnum, auto, unique
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import regex
 
@@ -44,7 +44,11 @@ class CountingGame(ABC):
         pass
 
 
-up_matcher = regex.compile(r"(?<!`)up(?!`)", regex.IGNORECASE)
-number_matcher = regex.compile(r"(?<=[a-z !?.,\-^*]|^)(?P<number>[0-9]+)(?=[a-z !?.,\-^*]|$)", regex.IGNORECASE)
-fizz_matcher = regex.compile(r"(?<!`)fizz(?!`)", regex.IGNORECASE)
-buzz_matcher = regex.compile(r"(?<!`)buzz(?!`)", regex.IGNORECASE)
+def get_matcher(to_match: str) -> regex.Pattern[Any]:
+    return regex.compile(rf"(?<!`.*){to_match}(?!.*`)", regex.IGNORECASE)
+
+
+up_matcher = get_matcher("up")
+number_matcher = get_matcher(r"(?<=[a-z !?.,\-^*]|^)(?P<number>[0-9]+)(?=[a-z !?.,\-^*]|$)")
+fizz_matcher = get_matcher("fizz")
+buzz_matcher = get_matcher("buzz")
