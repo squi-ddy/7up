@@ -6,7 +6,11 @@ from .base import CountingGame, ValidationResult, number_matcher, up_matcher
 class SevenUpHardGame(CountingGame):
     @classmethod
     def check_number_up(cls, number: int) -> int:
-        number_up: int = number % 7 == 0
+        number_copy = number
+        number_up = 0
+        while not number_copy % 7:
+            number_up += 1
+            number_copy //= 7
         while number >= 1:
             number_up += number % 10 == 7
             number //= 10
@@ -45,8 +49,8 @@ class SevenUpHardGame(CountingGame):
             + "How many times to say `Up` is now based on how many "
             + "times it breaks the rules!\n"
             + "Basically, it's equal to the number of `7`s in the number "
-            + "plus whether the number is divisible by `7`!\n"
+            + "plus the number of times it is divisible by `7`!\n"
             "Example: `1` -> `1`, `7` -> `Up Up`, `17` -> `Up`, "
-            + "`49` -> `Up`, `77` -> `Up Up Up`\n"
+            + "`49` -> `Up Up`, `77` -> `Up Up Up`\n"
             + "Per usual: A person cannot say two numbers in a row!",
         )
