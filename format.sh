@@ -11,7 +11,7 @@ flake8 --exclude ./venv .
 echo
 
 echo Running MyPy...
-mypy .
+mypy src/
 echo
 
 echo Running pytest...
