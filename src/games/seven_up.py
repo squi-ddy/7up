@@ -23,7 +23,7 @@ class SevenUpGame(CountingGame):
         number_str = str(number)
         has_number = len(numbers) != 0 and all(entered_number == number_str for entered_number in numbers)
 
-        if not has_up and not len(numbers):
+        if not has_up and not len(numbers) and to_check != "<:drewimo:993167758500048916>":
             # unrelated message
             return ValidationResult.UNRELATED
 
