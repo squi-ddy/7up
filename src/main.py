@@ -13,7 +13,7 @@ def main() -> None:
 
     uvloop.install()
 
-    database = GameDatabase(loaded_settings)
+    database = GameDatabase()
 
     intents = nextcord.Intents.default()
     # noinspection PyDunderSlots,PyUnresolvedReferences

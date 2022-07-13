@@ -5,7 +5,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import asyncpg
 
-from utils.env import Settings
+from utils.env import Settings, loaded_settings
 
 
 @dataclass(kw_only=True)
@@ -56,7 +56,7 @@ class GameDatabase:
     _settings: Settings
     _records: Dict[int, GameRecordWrapper]
 
-    def __init__(self, settings: Settings):
+    def __init__(self, settings: Settings = loaded_settings):
         self._settings = settings
         self._records = {}
 
