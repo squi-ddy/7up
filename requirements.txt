@@ -17,4 +17,5 @@ orjson==3.7.7
 pycares==4.2.1
 pycparser==2.21
 uvloop==0.16.0
+regex==2022.7.9
 yarl==1.7.2

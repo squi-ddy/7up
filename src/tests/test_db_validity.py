@@ -1,10 +1,9 @@
-import re
-
 import pytest
+import regex
 
 from utils import GameDatabase, GameRecord
 
-optional_extractor = re.compile(r"Optional\[(.+)]")
+optional_extractor = regex.compile(r"Optional\[(.+)]")
 map_python_to_postgres = {"int": ["bigint", "integer"]}
 
 

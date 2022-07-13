@@ -36,7 +36,9 @@ pytest==7.1.2
 pytest-asyncio==0.18.3
 pytest-dotenv==0.5.2
 python-dotenv==0.20.0
+regex==2022.7.9
 tomli==2.0.1
+types-regex==2022.6.2.0
 typing_extensions==4.3.0
 uvloop==0.16.0
 yarl==1.7.2

@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-import re
 from abc import ABC, abstractmethod
 from enum import IntEnum, auto, unique
 from typing import TYPE_CHECKING
+
+import regex
 
 if TYPE_CHECKING:
     from nextcord import Embed
@@ -43,7 +44,7 @@ class CountingGame(ABC):
         pass
 
 
-up_matcher = re.compile("up", re.IGNORECASE)
-number_matcher = re.compile(r"([a-z !?.,-]|^)(?P<number>[0-9]+)([a-z !?.,-]|$)", re.IGNORECASE)
-fizz_matcher = re.compile("fizz", re.IGNORECASE)
-buzz_matcher = re.compile("buzz", re.IGNORECASE)
+up_matcher = regex.compile("up", regex.IGNORECASE)
+number_matcher = regex.compile(r"(?<=[a-z !?.,\-^*]|^)(?P<number>[0-9]+)(?=[a-z !?.,\-^*]|$)", regex.IGNORECASE)
+fizz_matcher = regex.compile("fizz", regex.IGNORECASE)
+buzz_matcher = regex.compile("buzz", regex.IGNORECASE)
