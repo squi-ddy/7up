@@ -26,6 +26,9 @@ messages = [
     "This is a discussion about `7`",
     "`1524`",
     "꧕",
+    "`fizz`",
+    "`buzz`",
+    "`up`",
 ]
 
 
