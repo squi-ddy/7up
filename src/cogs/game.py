@@ -14,6 +14,8 @@ class GameCog(commands.Cog):
     lock: asyncio.Lock
 
     def __init__(self, bot: commands.Bot, database: GameDatabase):
+        super(GameCog, self).__init__()
+
         self.bot = bot
         self.database = database
         self.lock = asyncio.Lock()

@@ -4,7 +4,7 @@ import nextcord
 import uvloop
 from nextcord.ext import commands
 
-from cogs import GameCog
+from cogs import GameCog, MiscCog
 from utils import GameDatabase, loaded_settings
 
 
@@ -21,10 +21,7 @@ def main() -> None:
 
     bot: commands.Bot = commands.Bot(intents=intents)  # type: ignore
 
-    @bot.event
-    async def on_ready() -> None:
-        await bot.change_presence(activity=nextcord.Game(name=f"7up in {len(bot.guilds)} servers!"))
-
+    bot.add_cog(MiscCog(bot))
     bot.add_cog(GameCog(bot, database))
 
     bot.run(loaded_settings.bot_token)
