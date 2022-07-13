@@ -1,3 +1,7 @@
 .env
 
 .idea/sonarlint/
+
+.mypy_cache
+
+.pytest_cache

@@ -14,6 +14,7 @@ click==8.1.3
 flake8==4.0.1
 frozenlist==1.3.0
 idna==3.3
+iniconfig==1.1.1
 isort==5.10.1
 mccabe==0.6.1
 multidict==6.0.2
@@ -21,12 +22,17 @@ mypy==0.961
 mypy-extensions==0.4.3
 nextcord==2.0.0
 orjson==3.7.7
+packaging==21.3
 pathspec==0.9.0
 platformdirs==2.5.2
+pluggy==1.0.0
+py==1.11.0
 pycares==4.2.1
 pycodestyle==2.8.0
 pycparser==2.21
 pyflakes==2.4.0
+pyparsing==3.0.9
+pytest==7.1.2
 tomli==2.0.1
 typing_extensions==4.3.0
 uvloop==0.16.0

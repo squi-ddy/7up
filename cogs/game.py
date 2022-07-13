@@ -42,7 +42,7 @@ class GameCog(commands.Cog):
             return
 
         async with self.lock:
-            await self.database.add_record(GameRecord(guild=interaction.guild.id, channel=channel.id))
+            await self.database.set_record(GameRecord(guild=interaction.guild.id, channel=channel.id))
 
         await interaction.response.send_message(f"Successfully bound to {channel.mention}!")
 
@@ -74,8 +74,8 @@ class GameCog(commands.Cog):
         for i, game in enumerate(GameSelector.games):
             embed: nextcord.Embed = game.get_embed()
 
-            if i == game_type:
-                embed.description += "\n\n**Currently selected!**"
+            if i == game_type and embed.description != nextcord.Embed.Empty:
+                embed.description += "\n\n**Currently selected!**"  # type: ignore
 
             paginator_pages.append(embed)
 
@@ -162,7 +162,7 @@ class GameCog(commands.Cog):
                     mention_author=True,
                 )
 
-                await self.database.add_record(
+                await self.database.set_record(
                     GameRecord(
                         guild=record.guild,
                         channel=record.channel,

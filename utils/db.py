@@ -85,7 +85,7 @@ class GameDatabase:
 
         return game_record
 
-    async def add_record(self, record: GameRecord) -> None:
+    async def set_record(self, record: GameRecord) -> None:
         guild = record.guild
 
         if guild in self._records:
