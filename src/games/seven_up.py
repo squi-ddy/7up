@@ -15,6 +15,10 @@ class SevenUpGame(CountingGame):
 
     @classmethod
     def is_valid(cls, to_check: str, number: int) -> ValidationResult:
+        
+        if("<:drewimo:993167758500048916>" in to_check)
+            return ValidationResult.from_bool(True)
+        
         is_up: bool = cls.check_is_up(number)
         is_number = not is_up
 
@@ -23,7 +27,7 @@ class SevenUpGame(CountingGame):
         number_str = str(number)
         has_number = len(numbers) != 0 and all(entered_number == number_str for entered_number in numbers)
 
-        if not has_up and not len(numbers) and to_check != "<:drewimo:993167758500048916>":
+        if not has_up and not len(numbers):
             # unrelated message
             return ValidationResult.UNRELATED
 
