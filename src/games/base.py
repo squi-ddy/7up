@@ -49,6 +49,6 @@ def get_matcher(to_match: str) -> regex.Pattern[Any]:
 
 
 up_matcher = get_matcher("up")
-number_matcher = get_matcher(r"(?<=[a-z !?.,\-^*]|^)(?P<number>[0-9]+)(?=[a-z !?.,\-^*]|$)")
+number_matcher = get_matcher(r"(?<=[a-z !?.,\-^*(]|^)(?P<number>[0-9]+)(?=[a-z !?.,\-^*)]|$)")
 fizz_matcher = get_matcher("fizz")
 buzz_matcher = get_matcher("buzz")
