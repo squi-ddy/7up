@@ -1,6 +1,12 @@
 from nextcord import Embed
 
-from .base import CountingGame, ValidationResult, buzz_matcher, fizz_matcher, number_matcher
+from .base import (
+    CountingGame,
+    ValidationResult,
+    buzz_matcher,
+    fizz_matcher,
+    number_matcher,
+)
 
 
 class FizzBuzzGame(CountingGame):

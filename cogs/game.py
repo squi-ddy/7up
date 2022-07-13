@@ -42,7 +42,14 @@ class GameCog(commands.Cog):
             return
 
         async with self.lock:
-            await self.database.set_record(GameRecord(guild=interaction.guild.id, channel=channel.id))
+            record: Optional[GameRecord] = await self.database.get_record(interaction.guild.id)
+
+            if not record:
+                await self.database.set_record(GameRecord(guild=interaction.guild.id, channel=channel.id))
+                return
+
+            record.channel = channel.id
+            record.reset_game()
 
         await interaction.response.send_message(f"Successfully bound to {channel.mention}!")
 
@@ -121,6 +128,7 @@ class GameCog(commands.Cog):
                 return
 
             record.game_type = GameSelector.get_id_by_game(game)
+            record.reset_game()
 
         await interaction.response.send_message(f"Success! You're now playing {game_name}!")
 

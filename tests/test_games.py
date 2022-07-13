@@ -1,6 +1,13 @@
 import nextcord
 
-from games import CountUpGame, SevenUpFactorsGame, SevenUpGame, SevenUpHardGame, FizzBuzzGame, ValidationResult
+from games import (
+    CountUpGame,
+    FizzBuzzGame,
+    SevenUpFactorsGame,
+    SevenUpGame,
+    SevenUpHardGame,
+    ValidationResult,
+)
 
 games_to_test = [
     SevenUpGame,

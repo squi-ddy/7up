@@ -20,6 +20,10 @@ class GameRecord:
         self.on_change()
         super(GameRecord, self).__setattr__(key, value)
 
+    def reset_game(self) -> None:
+        self.current_count = 1
+        self.last_user = None
+
     # To be "overridden"
     def on_change(self) -> None:
         pass
