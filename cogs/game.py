@@ -61,17 +61,33 @@ class GameCog(commands.Cog):
 
         paginator_pages: List[nextcord.Embed] = [seven_up_help]
 
-        for game in GameSelector.games:
-            paginator_pages.append(game.get_embed())
+        game_type = -1
+
+        if interaction.guild is not None:
+            async with self.lock:
+                record: Optional[GameRecord] = await self.database.get_record(interaction.guild.id)
+
+            game_type = 0
+            if record is not None:
+                game_type = record.game_type
+
+        for i, game in enumerate(GameSelector.games):
+            embed: nextcord.Embed = game.get_embed()
+
+            if i == game_type:
+                embed.add_field(name="Currently selected!", value="", inline=False)
+
+            paginator_pages.append(embed)
 
         message = await interaction.response.send_message(embed=paginator_pages[0], ephemeral=True)
+
         paginator = Paginator(
             message=message,
             embeds=paginator_pages,
             author=interaction.user,
             bot=self.bot,
-            footer_type=FooterType.PAGE_NUMBER,
-            footer_bot_icon=True,
+            embed_footer_type=FooterType.PAGE_NUMBER,
+            embed_footer_bot_icon=True,
         )
 
         await paginator.start()

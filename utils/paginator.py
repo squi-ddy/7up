@@ -15,8 +15,6 @@ class FooterType(IntEnum):
 
 
 class Paginator(nextcord.ui.View):
-    footer_type: FooterType
-    footer_bot_icon: bool
     message: nextcord.PartialInteractionMessage
     embeds: Sequence[nextcord.Embed]
     bot: commands.Bot
@@ -30,36 +28,43 @@ class Paginator(nextcord.ui.View):
         author: Union[nextcord.User, nextcord.Member],
         bot: commands.Bot,
         timeout: float = 180.0,
-        footer_type: FooterType = FooterType.NONE,
-        footer_bot_icon: bool = False,
+        embed_footer_type: FooterType = FooterType.NONE,
+        embed_footer_bot_icon: bool = False,
+        embed_colour: nextcord.Colour = nextcord.Colour.blurple(),
+        __format_embeds: bool = True
     ) -> None:
-        super().__init__(timeout=timeout)
-        self.footer_type = footer_type
-        self.footer_bot_icon = footer_bot_icon
+        super(Paginator, self).__init__(timeout=timeout)
         self.message = message
         self.embeds = embeds
         self.author = author
         self.bot = bot
         self.page = 0
 
-        if self.bot.user is None or self.bot.user.display_avatar is None:
-            raise ValueError("Invalid bot avatar")
+        if self.bot.user is None:
+            raise ValueError("Invalid bot")
 
-        if self.footer_type != FooterType.NONE:
+        if __format_embeds:
             for i, embed in enumerate(self.embeds):
-                if self.footer_type == FooterType.TIMESTAMP:
+                if embed_footer_type == FooterType.TIMESTAMP:
                     embed.timestamp = datetime.datetime.utcnow()
                 embed.set_footer(
                     text=f"Page {i + 1} of {len(self.embeds)}"
-                    if self.footer_type == FooterType.PAGE_NUMBER
+                    if embed_footer_type == FooterType.PAGE_NUMBER
                     else "\u200b",
-                    icon_url=self.bot.user.display_avatar.url if self.footer_bot_icon else nextcord.Embed.Empty,
+                    icon_url=self.bot.user.display_avatar.url if embed_footer_bot_icon else nextcord.Embed.Empty,
                 )
+                embed.colour = embed_colour
 
     async def start(self) -> None:
         await self.message.edit(
             embed=self.embeds[0],
-            view=Paginator(message=self.message, embeds=self.embeds, author=self.author, bot=self.bot),
+            view=Paginator(
+                message=self.message,
+                embeds=self.embeds,
+                author=self.author,
+                bot=self.bot,
+                __format_embeds=False
+            ),
         )
 
     async def on_timeout(self) -> None:
