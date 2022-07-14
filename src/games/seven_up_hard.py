@@ -25,15 +25,18 @@ class SevenUpHardGame(CountingGame):
         number_up_in_str = len(up_matcher.findall(to_check))
         numbers = [entered_number.group("number") for entered_number in number_matcher.finditer(to_check)]
         number_str = str(number)
-        has_number = len(number_matcher.findall(to_check)) != 0 and all(
-            entered_number == number_str for entered_number in numbers
-        )
+
+        has_one_number = bool(len(numbers))
+        has_correct_numbers = all(entered_number == number_str for entered_number in numbers)
 
         if not len(numbers) and not number_up_in_str:
             # unrelated message
             return ValidationResult.UNRELATED
 
-        return ValidationResult.from_bool((number_up, is_number) == (number_up_in_str, has_number))
+        return ValidationResult.from_bool(
+            (number_up, is_number, not has_one_number or is_number)
+            == (number_up_in_str, has_one_number, has_correct_numbers)
+        )
 
     @classmethod
     def get_solution(cls, number: int) -> str:

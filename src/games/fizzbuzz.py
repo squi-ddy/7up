@@ -22,12 +22,16 @@ class FizzBuzzGame(CountingGame):
         numbers = [entered_number.group("number") for entered_number in number_matcher.finditer(to_check)]
         number_str = str(number)
 
-        has_number = len(numbers) != 0 and all(entered_number == number_str for entered_number in numbers)
+        has_one_number = bool(len(numbers))
+        has_correct_numbers = all(entered_number == number_str for entered_number in numbers)
 
-        if not any((has_fizz, has_buzz, len(numbers))):
+        if not any((has_fizz, has_buzz, has_one_number)):
             return ValidationResult.UNRELATED
 
-        return ValidationResult.from_bool((is_fizz, is_buzz, is_number) == (has_fizz, has_buzz, has_number))
+        return ValidationResult.from_bool(
+            (is_fizz, is_buzz, is_number, not has_one_number or is_number)
+            == (has_fizz, has_buzz, has_one_number, has_correct_numbers)
+        )
 
     @classmethod
     def get_solution(cls, number: int) -> str:

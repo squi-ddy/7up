@@ -21,13 +21,17 @@ class SevenUpGame(CountingGame):
         has_up = up_matcher.search(to_check) is not None
         numbers = [entered_number.group("number") for entered_number in number_matcher.finditer(to_check)]
         number_str = str(number)
-        has_number = len(numbers) != 0 and all(entered_number == number_str for entered_number in numbers)
+
+        has_one_number = bool(len(numbers))
+        has_correct_numbers = all(entered_number == number_str for entered_number in numbers)
 
         if not has_up and not len(numbers):
             # unrelated message
             return ValidationResult.UNRELATED
 
-        return ValidationResult.from_bool((is_up, is_number) == (has_up, has_number))
+        return ValidationResult.from_bool(
+            (is_up, is_number, not has_one_number or is_number) == (has_up, has_one_number, has_correct_numbers)
+        )
 
     @classmethod
     def get_solution(cls, number: int) -> str:

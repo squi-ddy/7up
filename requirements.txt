@@ -18,4 +18,5 @@ pycares==4.2.1
 pycparser==2.21
 uvloop==0.16.0
 regex==2022.7.9
+wheel==0.37.1
 yarl==1.7.2
