@@ -3,9 +3,7 @@ from utils import MarkdownNode, parse_markdown
 
 def has_node_type(ast, target_node):
     for node_type, content in ast:
-        if node_type == target_node or (
-            target_node in (MarkdownNode.BOLD, MarkdownNode.ITALIC) and node_type == MarkdownNode.BOLD_ITALIC
-        ):
+        if node_type & target_node:
             return True
 
         if not isinstance(content, str) and has_node_type(content, target_node):
@@ -15,14 +13,14 @@ def has_node_type(ast, target_node):
 
 
 test_cases = [
-    ("*foo `bar* baz`", [MarkdownNode.ITALIC], [MarkdownNode.CODEBLOCK]),
-    ("`*foo*`", [MarkdownNode.CODEBLOCK], [MarkdownNode.ITALIC]),
+    ("*foo `bar* baz`", [MarkdownNode.ITALIC], [MarkdownNode.CODE_BLOCK]),
+    ("`*foo*`", [MarkdownNode.CODE_BLOCK], [MarkdownNode.ITALIC]),
     (
         "> ||***__`foobar`__***||",
         [
             MarkdownNode.ITALIC,
             MarkdownNode.BOLD,
-            MarkdownNode.CODEBLOCK,
+            MarkdownNode.CODE_BLOCK,
             MarkdownNode.SPOILER,
             MarkdownNode.UNDERLINE,
             MarkdownNode.BLOCKQUOTE,

@@ -1,17 +1,17 @@
 from __future__ import annotations
 
-from enum import IntEnum, auto
+from enum import IntFlag, auto, unique
 from typing import Optional, Sequence, Tuple, Union
 
 
 # noinspection PyArgumentList
-class MarkdownNode(IntEnum):
+@unique
+class MarkdownNode(IntFlag):
     TEXT = auto()
     BOLD = auto()
     ITALIC = auto()
-    BOLD_ITALIC = auto()
     UNDERLINE = auto()
-    CODEBLOCK = auto()
+    CODE_BLOCK = auto()
     BLOCKQUOTE = auto()
     SPOILER = auto()
     TREE = auto()
@@ -20,14 +20,15 @@ class MarkdownNode(IntEnum):
 MarkdownTree = Sequence[Tuple[MarkdownNode, Union[str, "MarkdownTree"]]]  # type: ignore
 
 chars_to_node: Sequence[Tuple[str, MarkdownNode]] = [
-    ("***", MarkdownNode.BOLD_ITALIC),
+    ("***", MarkdownNode.BOLD | MarkdownNode.ITALIC),
     ("**", MarkdownNode.BOLD),
     ("*", MarkdownNode.ITALIC),
+    ("___", MarkdownNode.UNDERLINE | MarkdownNode.ITALIC),
     ("__", MarkdownNode.UNDERLINE),
     ("_", MarkdownNode.ITALIC),
     ("||", MarkdownNode.SPOILER),
-    ("```", MarkdownNode.CODEBLOCK),
-    ("`", MarkdownNode.CODEBLOCK),
+    ("```", MarkdownNode.CODE_BLOCK),
+    ("`", MarkdownNode.CODE_BLOCK),
 ]
 
 
@@ -53,7 +54,7 @@ def parse_markdown(
                     ),  # inside
                 ]
 
-    if _inside != MarkdownNode.CODEBLOCK:
+    if _inside is None or (_inside is not None and not _inside & MarkdownNode.CODE_BLOCK):
         for i in range(len(input_markdown)):
             for characters, node_type in chars_to_node:
                 if input_markdown.startswith(characters, i):
