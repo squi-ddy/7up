@@ -5,7 +5,7 @@ import uvloop
 from nextcord.ext import commands
 
 from cogs import GameCog, MiscCog
-from utils import GameDatabase, loaded_settings
+from util import GameDatabase, loaded_settings
 
 
 def main() -> None:

@@ -1,4 +1,4 @@
-from utils import MarkdownNode, parse_markdown
+from util import MarkdownNode, parse_markdown
 
 to_ignore = MarkdownNode.CODE_BLOCK | MarkdownNode.SPOILER | MarkdownNode.BLOCKQUOTE
 

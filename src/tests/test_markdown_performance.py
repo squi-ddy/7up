@@ -3,7 +3,7 @@ import string
 
 import pytest
 
-from utils import parse_markdown
+from util import parse_markdown
 
 performance_tests = ["> ||" + "***__`foobar`__***" * 200 + "||", "|" * 2000, "||***__" + "a" * 2000 + "__***||"]
 

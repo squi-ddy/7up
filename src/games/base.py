@@ -1,10 +1,9 @@
 from __future__ import annotations
 
+import re
 from abc import ABC, abstractmethod
 from enum import IntEnum, auto, unique
-from typing import TYPE_CHECKING, Any
-
-import regex
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from nextcord import Embed
@@ -44,13 +43,7 @@ class CountingGame(ABC):
         pass
 
 
-def get_matcher(to_match: str) -> regex.Pattern[Any]:
-    return regex.compile(
-        rf"(?<!^[^`]*(`[^`]*`[^`]*)*`[^`]*){to_match}", regex.IGNORECASE
-    )  # kinda flawed but good enough
-
-
-up_matcher = get_matcher("up")
-number_matcher = get_matcher(r"(?<=[a-z !?.,\-^*(]|^)(?P<number>[0-9]+)(?=[a-z !?.,\-^*)]|$)")
-fizz_matcher = get_matcher("fizz")
-buzz_matcher = get_matcher("buzz")
+up_matcher = re.compile("up", re.IGNORECASE)
+number_matcher = re.compile(r"\d+", re.ASCII)
+fizz_matcher = re.compile("fizz", re.IGNORECASE)
+buzz_matcher = re.compile("buzz", re.IGNORECASE)

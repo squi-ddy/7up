@@ -1,6 +1,6 @@
 from nextcord import Embed
 
-from utils import int_or_null
+from games.util import int_or_null
 
 from .base import CountingGame, ValidationResult, number_matcher, up_matcher
 
@@ -25,7 +25,7 @@ class SevenUpHardGame(CountingGame):
         is_number = not number_up
 
         number_up_in_str = len(up_matcher.findall(to_check))
-        numbers = [int_or_null(entered_number.group("number")) for entered_number in number_matcher.finditer(to_check)]
+        numbers = [int_or_null(entered_number) for entered_number in number_matcher.findall(to_check)]
 
         has_one_number = bool(len(numbers))
         has_correct_numbers = all(entered_number == number for entered_number in numbers)

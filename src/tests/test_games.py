@@ -13,6 +13,7 @@ from games import (
     SevenUpHardGame,
     ValidationResult,
 )
+from games.util import process_ignores
 
 games_to_test = [
     SevenUpGame,
@@ -24,10 +25,6 @@ games_to_test = [
 
 ignore_messages = [
     "I love cream cheese!",
-    "<@832964372803354655>",
-    "<:drewimo:993167758500048916>",
-    "<#995972091759300629>",
-    ":1:",
     "This is a discussion about `7`",
     "`1524`",
     "꧕",
@@ -49,7 +46,7 @@ def test_games_solutions(game):
 def test_games_ignore(game: Type[CountingGame], to_ignore: str):
     # Test on unrelated message
     for i in range(1, 1000):
-        assert game.is_valid(to_ignore, i) == ValidationResult.UNRELATED
+        assert game.is_valid(process_ignores(to_ignore), i) == ValidationResult.UNRELATED
 
 
 def test_games_help():

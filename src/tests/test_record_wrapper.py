@@ -1,4 +1,4 @@
-from utils import GameRecord, GameRecordWrapper
+from util import GameRecord, GameRecordWrapper
 
 
 def test_record_1():

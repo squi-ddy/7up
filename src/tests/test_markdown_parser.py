@@ -1,6 +1,6 @@
 import pytest
 
-from utils import MarkdownNode, parse_markdown
+from util import MarkdownNode, parse_markdown
 
 
 def has_node_type(ast, target_node):

@@ -7,7 +7,7 @@ from nextcord.ext import commands, tasks
 
 from games import CountingGame, GameSelector, ValidationResult
 from games.util import process_ignores
-from utils import FooterType, GameDatabase, GameRecord, Paginator
+from util import FooterType, GameDatabase, GameRecord, Paginator
 
 
 class GameCog(commands.Cog):

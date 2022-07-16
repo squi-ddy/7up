@@ -5,7 +5,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 import asyncpg
 
-from utils.env import Settings, loaded_settings
+from util.env import Settings, loaded_settings
 
 
 @dataclass(kw_only=True)
