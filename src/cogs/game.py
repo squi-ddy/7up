@@ -155,7 +155,9 @@ class GameCog(commands.Cog):
 
             game: Type[CountingGame] = GameSelector.get_game_by_id(record.game_type)
 
-            validation: ValidationResult = game.is_valid(process_ignores(message.clean_content()), record.current_count)
+            # PyCharm doesn't understand `message.clean_content`
+            # noinspection PyTypeChecker
+            validation: ValidationResult = game.is_valid(process_ignores(message.clean_content), record.current_count)
 
             if validation == ValidationResult.UNRELATED:
                 return
