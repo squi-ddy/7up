@@ -175,9 +175,6 @@ class GameCog(commands.Cog):
         else:
             await message.add_reaction("❌")
 
-            # noinspection PyTypeChecker
-            clean_content = nextcord.utils.escape_markdown(message.clean_content)
-
             await message.reply(
                 embed=nextcord.Embed(
                     colour=nextcord.Colour.dark_red(),
@@ -185,10 +182,7 @@ class GameCog(commands.Cog):
                     description=f"{message.author.mention} lost the game at {record.current_count}!",
                 ).add_field(
                     name="Error Diagnosis:",
-                    value=(
-                        f"Should have said `{game.get_solution(record.current_count)}`, instead said "
-                        f"`{clean_content}` "
-                    )
+                    value=f"Should have said `{game.get_solution(record.current_count)}`"
                     if validation == ValidationResult.REJECT
                     else "Should have waited their turn",
                 ),
