@@ -27,6 +27,7 @@ pathspec==0.9.0
 platformdirs==2.5.2
 pluggy==1.0.0
 py==1.11.0
+py-cpuinfo==8.0.0
 pycares==4.2.1
 pycodestyle==2.8.0
 pycparser==2.21
@@ -34,6 +35,7 @@ pyflakes==2.4.0
 pyparsing==3.0.9
 pytest==7.1.2
 pytest-asyncio==0.18.3
+pytest-benchmark==3.4.1
 pytest-dotenv==0.5.2
 python-dotenv==0.20.0
 regex==2022.7.9
@@ -41,5 +43,4 @@ tomli==2.0.1
 types-regex==2022.6.2.0
 typing_extensions==4.3.0
 uvloop==0.16.0
-wheel==0.37.1
 yarl==1.7.2

@@ -1,5 +1,7 @@
 from nextcord import Embed
 
+from utils import int_or_null
+
 from .base import CountingGame, ValidationResult, number_matcher, up_matcher
 
 
@@ -23,11 +25,10 @@ class SevenUpHardGame(CountingGame):
         is_number = not number_up
 
         number_up_in_str = len(up_matcher.findall(to_check))
-        numbers = [entered_number.group("number") for entered_number in number_matcher.finditer(to_check)]
-        number_str = str(number)
+        numbers = [int_or_null(entered_number.group("number")) for entered_number in number_matcher.finditer(to_check)]
 
         has_one_number = bool(len(numbers))
-        has_correct_numbers = all(entered_number == number_str for entered_number in numbers)
+        has_correct_numbers = all(entered_number == number for entered_number in numbers)
 
         if not len(numbers) and not number_up_in_str:
             # unrelated message
@@ -55,7 +56,7 @@ class SevenUpHardGame(CountingGame):
             + "times it breaks the rules!\n"
             + "Basically, it's equal to the number of `7`s in the number "
             + "plus the number of times it is divisible by `7`!\n"
-            "Example: `1` -> `1`, `7` -> `Up Up`, `17` -> `Up`, "
+            + "Example: `1` -> `1`, `7` -> `Up Up`, `17` -> `Up`, "
             + "`49` -> `Up Up`, `77` -> `Up Up Up`\n"
             + "Per usual: A person cannot say two numbers in a row!",
         )

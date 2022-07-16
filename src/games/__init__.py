@@ -15,7 +15,7 @@ __all__ = [
     "SevenUpFactorsGame",
     "SevenUpHardGame",
     "GameSelector",
-    "ValidationResult",
+    "ValidationResult"
 ]
 
 

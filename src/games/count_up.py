@@ -1,5 +1,7 @@
 from nextcord import Embed
 
+from utils import int_or_null
+
 from .base import CountingGame, ValidationResult, number_matcher
 
 
@@ -9,14 +11,12 @@ class CountUpGame(CountingGame):
         # Check if this string satisfies constraints for this number.
         # Rules:
         #   The only number that can appear is the target number.
-        numbers = [entered_number.group("number") for entered_number in number_matcher.finditer(to_check)]
+        numbers = [int_or_null(entered_number.group("number")) for entered_number in number_matcher.finditer(to_check)]
 
         if not len(numbers):
             return ValidationResult.UNRELATED
 
-        number_str = str(number)
-
-        has_number = all(entered_number == number_str for entered_number in numbers)
+        has_number = all(entered_number == number for entered_number in numbers)
 
         return ValidationResult.from_bool(has_number)
 

@@ -1,13 +1,13 @@
 import asyncio
+from datetime import datetime, timezone
 from typing import List, Optional, Type
 
 import nextcord
 from nextcord.ext import commands, tasks
 
 from games import CountingGame, GameSelector, ValidationResult
+from games.util import process_ignores
 from utils import FooterType, GameDatabase, GameRecord, Paginator
-
-from datetime import datetime, timezone
 
 
 class GameCog(commands.Cog):
@@ -141,9 +141,11 @@ class GameCog(commands.Cog):
     async def on_message(self, message: nextcord.Message) -> None:
         if message.author.bot or not message.guild:
             return
-        
+
         if (datetime.now(timezone.utc) - message.created_at).total_seconds() > 60:
             return
+
+        success = True
 
         async with self.lock:
             record: Optional[GameRecord] = await self.database.get_record(message.guild.id)
@@ -153,38 +155,40 @@ class GameCog(commands.Cog):
 
             game: Type[CountingGame] = GameSelector.get_game_by_id(record.game_type)
 
-            validation: ValidationResult = game.is_valid(message.content, record.current_count)
+            validation: ValidationResult = game.is_valid(process_ignores(message.clean_content()), record.current_count)
 
             if validation == ValidationResult.UNRELATED:
                 return
 
             if validation == ValidationResult.REJECT or record.last_user == message.author.id:
-                await message.add_reaction("❌")
-
-                await message.reply(
-                    embed=nextcord.Embed(
-                        colour=nextcord.Colour.dark_red(),
-                        title="Loser!",
-                        description=f"{message.author.mention} lost the game at {record.current_count}!",
-                    ).add_field(
-                        name="Error Diagnosis:",
-                        value=(
-                            f"Should have said `{game.get_solution(record.current_count)}`, instead said "
-                            f"`{nextcord.utils.escape_mentions(nextcord.utils.escape_markdown(message.content))}` "
-                        )
-                        if validation == ValidationResult.REJECT
-                        else "Should have waited their turn",
-                    ),
-                    mention_author=True,
-                )
-
                 record.reset_game()
+                success = False
 
             else:
-                await message.add_reaction("✅")
-
                 record.current_count += 1
                 record.last_user = message.author.id
+
+        if success:
+            await message.add_reaction("✅")
+        else:
+            await message.add_reaction("❌")
+
+            await message.reply(
+                embed=nextcord.Embed(
+                    colour=nextcord.Colour.dark_red(),
+                    title="Loser!",
+                    description=f"{message.author.mention} lost the game at {record.current_count}!",
+                ).add_field(
+                    name="Error Diagnosis:",
+                    value=(
+                        f"Should have said `{game.get_solution(record.current_count)}`, instead said "
+                        f"`{nextcord.utils.escape_mentions(nextcord.utils.escape_markdown(message.content))}` "
+                    )
+                    if validation == ValidationResult.REJECT
+                    else "Should have waited their turn",
+                ),
+                mention_author=True,
+            )
 
     @tasks.loop(minutes=2.0)
     async def save_data(self) -> None:

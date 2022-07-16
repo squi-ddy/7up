@@ -1,5 +1,7 @@
 from nextcord import Embed
 
+from utils import int_or_null
+
 from .base import (
     CountingGame,
     ValidationResult,
@@ -19,11 +21,10 @@ class FizzBuzzGame(CountingGame):
         has_fizz = fizz_matcher.search(to_check) is not None
         has_buzz = buzz_matcher.search(to_check) is not None
 
-        numbers = [entered_number.group("number") for entered_number in number_matcher.finditer(to_check)]
-        number_str = str(number)
+        numbers = [int_or_null(entered_number.group("number")) for entered_number in number_matcher.finditer(to_check)]
 
         has_one_number = bool(len(numbers))
-        has_correct_numbers = all(entered_number == number_str for entered_number in numbers)
+        has_correct_numbers = all(entered_number == number for entered_number in numbers)
 
         if not any((has_fizz, has_buzz, has_one_number)):
             return ValidationResult.UNRELATED
@@ -55,7 +56,7 @@ class FizzBuzzGame(CountingGame):
             + "When a number divides `3`, say `Fizz`!\n"
             + "When a number divides `5`, say `Buzz`!\n"
             + "When it divides both, say `FizzBuzz`!\n"
-            "Example: `1` -> `1`, `3` -> `Fizz`, `5` -> `Buzz`, "
+            + "Example: `1` -> `1`, `3` -> `Fizz`, `5` -> `Buzz`, "
             + "`15` -> `FizzBuzz`!\n"
             + "Per usual: A person cannot say two numbers in a row!",
         )

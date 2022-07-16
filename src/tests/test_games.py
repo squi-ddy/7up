@@ -1,6 +1,11 @@
+import itertools
+from typing import Type
+
 import nextcord
+import pytest
 
 from games import (
+    CountingGame,
     CountUpGame,
     FizzBuzzGame,
     SevenUpFactorsGame,
@@ -33,19 +38,18 @@ ignore_messages = [
 ]
 
 
-def test_games_solutions():
+@pytest.mark.parametrize("game", games_to_test)
+def test_games_solutions(game):
     # Test on correct solutions
-    for game in games_to_test:
-        for i in range(1, 1000):
-            assert game.is_valid(game.get_solution(i), i) == ValidationResult.ACCEPT
+    for i in range(1, 1000):
+        assert game.is_valid(game.get_solution(i), i) == ValidationResult.ACCEPT
 
 
-def test_games_ignore():
+@pytest.mark.parametrize("game, to_ignore", itertools.product(games_to_test, ignore_messages))
+def test_games_ignore(game: Type[CountingGame], to_ignore: str):
     # Test on unrelated message
-    for game in games_to_test:
-        for i in range(1, 1000):
-            for message in ignore_messages:
-                assert game.is_valid(message, i) == ValidationResult.UNRELATED
+    for i in range(1, 1000):
+        assert game.is_valid(to_ignore, i) == ValidationResult.UNRELATED
 
 
 def test_games_help():
