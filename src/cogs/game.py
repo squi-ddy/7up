@@ -176,7 +176,7 @@ class GameCog(commands.Cog):
             await message.add_reaction("❌")
 
             # noinspection PyTypeChecker
-            clean_content = message.clean_content
+            clean_content = nextcord.utils.escape_markdown(message.clean_content)
 
             await message.reply(
                 embed=nextcord.Embed(
