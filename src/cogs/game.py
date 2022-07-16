@@ -7,7 +7,7 @@ from nextcord.ext import commands, tasks
 from games import CountingGame, GameSelector, ValidationResult
 from utils import FooterType, GameDatabase, GameRecord, Paginator
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 class GameCog(commands.Cog):
@@ -142,7 +142,7 @@ class GameCog(commands.Cog):
         if message.author.bot or not message.guild:
             return
         
-        if (datetime.now() - message.created_at).total_seconds() > 60:
+        if (datetime.now(timezone.utc) - message.created_at).total_seconds() > 60:
             return
 
         async with self.lock:
