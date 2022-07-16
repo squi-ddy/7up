@@ -175,6 +175,9 @@ class GameCog(commands.Cog):
         else:
             await message.add_reaction("❌")
 
+            # noinspection PyTypeChecker
+            clean_content = message.clean_content
+
             await message.reply(
                 embed=nextcord.Embed(
                     colour=nextcord.Colour.dark_red(),
@@ -184,7 +187,7 @@ class GameCog(commands.Cog):
                     name="Error Diagnosis:",
                     value=(
                         f"Should have said `{game.get_solution(record.current_count)}`, instead said "
-                        f"`{nextcord.utils.escape_mentions(nextcord.utils.escape_markdown(message.content))}` "
+                        f"`{clean_content}` "
                     )
                     if validation == ValidationResult.REJECT
                     else "Should have waited their turn",
