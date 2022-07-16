@@ -7,6 +7,8 @@ from nextcord.ext import commands, tasks
 from games import CountingGame, GameSelector, ValidationResult
 from utils import FooterType, GameDatabase, GameRecord, Paginator
 
+from datetime import datetime
+
 
 class GameCog(commands.Cog):
     bot: commands.Bot
@@ -138,6 +140,9 @@ class GameCog(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message: nextcord.Message) -> None:
         if message.author.bot or not message.guild:
+            return
+        
+        if (datetime.now() - message.created_at).total_seconds() > 60:
             return
 
         async with self.lock:
