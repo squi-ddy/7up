@@ -142,7 +142,7 @@ class GameCog(commands.Cog):
         if message.author.bot or not message.guild:
             return
 
-        if (datetime.now(timezone.utc) - message.created_at).total_seconds() > 60:
+        if (datetime.now(timezone.utc) - message.created_at).total_seconds() > 10:
             return
 
         success = True
