@@ -23,7 +23,7 @@ test_cases = [
         [],
     ),
     ("*\n>>> foo*\nbar\nbaz", [MarkdownNode.BLOCKQUOTE], [MarkdownNode.ITALIC]),
-    ("*\n\n*", [MarkdownNode.ITALIC], []),
+    ("*\n\n*", [], [MarkdownNode.ITALIC]),
     ("\\*foo `bar* baz`", [MarkdownNode.CODE_BLOCK], [MarkdownNode.ITALIC]),
     ("* foo `bar* baz`", [MarkdownNode.CODE_BLOCK], [MarkdownNode.ITALIC]),
 ]

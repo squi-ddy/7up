@@ -61,7 +61,7 @@ def _parse_markdown_no_blockquote(
 
         for characters, node_type in chars_to_node:
             if to_parse.startswith(characters, i, _end):
-                if characters == "*" and to_parse.startswith(characters + " ", i, _end):
+                if characters == "*" and i + 1 < _end and to_parse[i + 1] in unicode.whitespace:
                     # discord doesn't match this, we shouldn't either
                     continue
 
