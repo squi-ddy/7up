@@ -146,7 +146,7 @@ class GameCog(commands.Cog):
             return
 
         success = True
-        solution = ""
+        current_count = 1
 
         async with self.lock:
             record: Optional[GameRecord] = await self.database.get_record(message.guild.id)
@@ -164,7 +164,7 @@ class GameCog(commands.Cog):
                 return
 
             if validation == ValidationResult.REJECT or record.last_user == message.author.id:
-                solution = game.get_solution(record.current_count)
+                current_count = record.current_count
                 record.reset_game()
                 success = False
 
@@ -174,6 +174,8 @@ class GameCog(commands.Cog):
 
         if success:
             await message.add_reaction("✅")
+        elif current_count == 1:
+            await message.add_reaction("⚠️")
         else:
             await message.add_reaction("❌")
 
@@ -181,10 +183,10 @@ class GameCog(commands.Cog):
                 embed=nextcord.Embed(
                     colour=nextcord.Colour.dark_red(),
                     title="Loser!",
-                    description=f"{message.author.mention} lost the game at {record.current_count}!",
+                    description=f"{message.author.mention} lost the game at {current_count}!",
                 ).add_field(
                     name="Error Diagnosis:",
-                    value=f"Should have said `{solution}`"
+                    value=f"Should have said `{game.get_solution(current_count)}`"
                     if validation == ValidationResult.REJECT
                     else "Should have waited their turn",
                 ),
