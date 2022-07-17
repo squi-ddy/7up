@@ -15,5 +15,5 @@ mypy src/
 echo
 
 echo Running pytest...
-pytest
+pytest --benchmark-autosave
 echo

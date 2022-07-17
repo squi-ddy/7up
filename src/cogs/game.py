@@ -158,7 +158,7 @@ class GameCog(commands.Cog):
 
             # PyCharm doesn't understand `message.clean_content`
             # noinspection PyTypeChecker
-            validation: ValidationResult = game.is_valid(process_ignores(message.clean_content), record.current_count)
+            validation: ValidationResult = game.is_valid(process_ignores(message.content), record.current_count)
 
             if validation == ValidationResult.UNRELATED:
                 return

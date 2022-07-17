@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+import string
 from enum import Flag, auto, unique
 from typing import List, Sequence, Tuple
+
+from util import unicode
 
 
 # noinspection PyArgumentList
@@ -29,103 +32,118 @@ chars_to_node: Sequence[Tuple[str, MarkdownNode]] = [
     ("`", MarkdownNode.CODE_BLOCK),
 ]
 
-special_characters = ["*", "_", "|", "`"]
-
 
 # For efficiency purposes, this is a separate function
 def _parse_markdown_no_blockquote(
-    input_markdown: str, *, _inside: MarkdownNode = MarkdownNode.DEFAULT
+    to_parse: str, *, _inside: MarkdownNode = MarkdownNode.DEFAULT, _start: int = 0, _end: int = -1
 ) -> Sequence[Tuple[MarkdownNode, str]]:
     if _inside & MarkdownNode.CODE_BLOCK:
         # don't interpret stuff in code blocks
-        return [(_inside, input_markdown)]
+        return [(_inside, to_parse[_start:_end])]
 
     return_tree: List[Tuple[MarkdownNode, str]] = []
     return_text = []
 
-    i = 0
-    while i < len(input_markdown):
-        if input_markdown[i] == "\\":
-            append_backslash = not (i + 1 < len(input_markdown) and input_markdown[i + 1] in special_characters)
+    i = _start
+    while i < _end:
+        if to_parse[i] == "\\":
+            append_backslash = i + 1 >= _end or to_parse[i + 1] in string.ascii_letters
 
             if append_backslash:
-                return_text.append(input_markdown[i])
+                return_text.append(to_parse[i])
 
-            if i + 1 < len(input_markdown):
-                return_text.append(input_markdown[i + 1])
+            if i + 1 < _end:
+                return_text.append(to_parse[i + 1])
 
             i += 2
 
             continue
 
         for characters, node_type in chars_to_node:
-            if input_markdown.startswith(characters, i):
-                if characters == "*" and input_markdown.startswith(characters + " ", i):
+            if to_parse.startswith(characters, i, _end):
+                if characters == "*" and to_parse.startswith(characters + " ", i, _end):
                     # discord doesn't match this, we shouldn't either
                     continue
 
                 start_index = i + len(characters)
                 # greedily match
-                try:
-                    end_index = input_markdown.index(characters, i + len(characters))
+                end_index = to_parse.find(characters, start_index, _end)
 
-                    if characters == "```":
-                        # ignore first line if it is multiline
-                        try:
-                            new_start_index = input_markdown.index("\n", i + len(characters))
-                            if new_start_index < end_index:
-                                start_index = new_start_index
-                        except ValueError:
-                            pass
-
-                    if characters == "*":
-                        # discord doesn't match if a * has a space in front, this deals with that.
-                        try:
-                            while input_markdown[end_index - 1] == " ":
-                                end_index = input_markdown.index(characters, end_index + len(characters))
-                        except ValueError:
-                            # False match
-                            continue
-
-                    return_tree.append((_inside, "".join(return_text)))
-                    return_tree.extend(
-                        _parse_markdown_no_blockquote(
-                            input_markdown[start_index:end_index],
-                            _inside=(_inside | node_type),
-                        ),
-                    )
-                    return_tree.extend(
-                        _parse_markdown_no_blockquote(input_markdown[end_index + len(characters) :], _inside=_inside)
-                    )
-                    return return_tree
-                except ValueError:
+                if end_index == -1:
                     continue
 
-        return_text.append(input_markdown[i])
+                if characters == "```":
+                    # ignore until first whitespace if multiline
+                    if to_parse.find("\n", start_index, end_index) != -1:
+                        new_start_index = _string_find_char(to_parse, unicode.whitespace, start_index, end_index)
+                        if new_start_index < end_index:
+                            start_index = new_start_index
+
+                return_tree.append((_inside, "".join(return_text)))
+                return_tree.extend(
+                    _parse_markdown_no_blockquote(
+                        to_parse, _inside=(_inside | node_type), _start=start_index, _end=end_index
+                    ),
+                )
+                return_tree.extend(
+                    _parse_markdown_no_blockquote(
+                        to_parse, _inside=_inside, _start=end_index + len(characters), _end=_end
+                    )
+                )
+                return return_tree
+
+        return_text.append(to_parse[i])
 
         i += 1
 
     return [(_inside, "".join(return_text))]
 
 
-def parse_markdown(
-    input_markdown: str, *, _inside: MarkdownNode = MarkdownNode.DEFAULT
+def _parse_markdown_blockquote(
+    to_parse: str, *, _inside: MarkdownNode = MarkdownNode.DEFAULT, _start: int, _end: int
 ) -> Sequence[Tuple[MarkdownNode, str]]:
     return_tree: List[Tuple[MarkdownNode, str]] = []
 
-    lines = input_markdown.split("\n")
-    for idx, line in enumerate(lines):
-        if line.startswith("> "):
-            return_tree.extend(_parse_markdown_no_blockquote("\n".join(lines[:idx]), _inside=_inside))
-            return_tree.extend(_parse_markdown_no_blockquote(line[2:], _inside=(_inside | MarkdownNode.BLOCKQUOTE)))
-            return_tree.extend(parse_markdown("\n".join(lines[idx + 1 :]), _inside=_inside))
+    current_newline = _start - 1
+    prev_newline: int
+
+    while current_newline < _end:
+        prev_newline = current_newline + 1
+        current_newline = location if (location := to_parse.find("\n", prev_newline, _end)) != -1 else _end
+
+        if to_parse.startswith("> ", prev_newline, current_newline):
+            return_tree.extend(
+                _parse_markdown_no_blockquote(to_parse, _inside=_inside, _start=_start, _end=prev_newline)
+            )
+            return_tree.extend(
+                _parse_markdown_no_blockquote(
+                    to_parse, _inside=(_inside | MarkdownNode.BLOCKQUOTE), _start=prev_newline + 2, _end=current_newline
+                )
+            )
+            return_tree.extend(_parse_markdown_blockquote(to_parse, _inside=_inside, _start=current_newline, _end=_end))
             return return_tree
 
-        elif line.startswith(">>> "):
-            return_tree.extend(_parse_markdown_no_blockquote("\n".join(lines[:idx]), _inside=_inside))
+        elif to_parse.startswith(">>> ", prev_newline, current_newline):
             return_tree.extend(
-                _parse_markdown_no_blockquote("\n".join(lines[idx:])[4:], _inside=(_inside | MarkdownNode.BLOCKQUOTE))
+                _parse_markdown_no_blockquote(to_parse, _inside=_inside, _start=_start, _end=prev_newline)
+            )
+            return_tree.extend(
+                _parse_markdown_no_blockquote(
+                    to_parse, _inside=(_inside | MarkdownNode.BLOCKQUOTE), _start=prev_newline + 4, _end=_end
+                )
             )
             return return_tree
 
-    return _parse_markdown_no_blockquote(input_markdown, _inside=_inside)
+    return _parse_markdown_no_blockquote(to_parse, _inside=_inside, _start=_start, _end=_end)
+
+
+def _string_find_char(to_parse: str, to_look: str, start: int = 0, end: int = -1) -> int:
+    for index in range(start, end):
+        if to_parse[index] in to_look:
+            return index
+
+    return -1
+
+
+def parse_markdown(to_parse: str) -> Sequence[Tuple[MarkdownNode, str]]:
+    return _parse_markdown_blockquote(to_parse, _start=0, _end=len(to_parse))

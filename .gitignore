@@ -5,3 +5,5 @@
 .mypy_cache
 
 .pytest_cache
+
+.benchmarks
