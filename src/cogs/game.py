@@ -144,6 +144,8 @@ class GameCog(commands.Cog):
 
         if (datetime.now(timezone.utc) - message.created_at).total_seconds() > 10:
             return
+        
+        print(message.content, flush=True)
 
         success = True
         current_count = 1
