@@ -9,11 +9,3 @@ echo
 echo Running Flake8...
 flake8 --exclude ./venv .
 echo
-
-echo Running MyPy...
-mypy src/
-echo
-
-echo Running pytest...
-pytest --benchmark-autosave
-echo
