@@ -1,9 +1,8 @@
 version: "3.8"
 
 services:
-  discord-bot:
+  bot:
     build: ./
-    command: "python src/main.py"
     env_file:
       - .env
     restart: on-failure
