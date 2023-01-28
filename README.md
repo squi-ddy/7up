@@ -1,4 +1,4 @@
-# 7up Discord Bot
+# 7up
 *A Discord Bot to play counting games!*
 
 ## Invite Link
