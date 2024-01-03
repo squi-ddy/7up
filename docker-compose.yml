@@ -5,4 +5,4 @@ services:
     build: ./
     env_file:
       - .env
-    restart: on-failure
+    restart: unless-stopped
