@@ -45,5 +45,5 @@ class CountingGame(ABC):
 
 up_matcher = re.compile("up", re.IGNORECASE)
 number_matcher = re.compile(r"\d+", re.ASCII)
-fizz_matcher = re.compile("fizz", re.IGNORECASE)
-buzz_matcher = re.compile("buzz", re.IGNORECASE)
+fizz_matcher = re.compile("foo", re.IGNORECASE)
+buzz_matcher = re.compile("bar", re.IGNORECASE)
