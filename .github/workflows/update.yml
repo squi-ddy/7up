@@ -18,11 +18,5 @@ jobs:
           echo "DB_PASS=${{ secrets.POSTGRES_PASSWORD }}" >> .env
           echo "BOT_TOKEN=${{ secrets.BOT_TOKEN }}" >> .env
 
-      - name: Rebuild containers
-        run: sudo docker compose build
-
-      - name: Run docker containers
-        run: sudo docker compose up -d
-
-      - name: Prune old containers
-        run: sudo docker system prune -f
+      - name: Signal for restart
+        run: echo "1" > restart.txt
