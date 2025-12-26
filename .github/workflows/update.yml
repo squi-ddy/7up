@@ -13,8 +13,10 @@ jobs:
       - name: Clone repository to local
         uses: actions/checkout@v2
 
-      - name: Copy env file
-        run: cp ../.env ./
+      - name: Make env file
+        run: |
+          echo "DB_PASS=${{ secrets.POSTGRES_PASSWORD }}" >> .env
+          echo "BOT_TOKEN=${{ secrets.BOT_TOKEN }}" >> .env
 
       - name: Rebuild containers
         run: sudo docker compose build
