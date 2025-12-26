@@ -13,10 +13,10 @@ class Settings:
 
 
 loaded_settings = Settings(
-    db_host=os.environ.get("DB_HOST", ""),
-    db_port=os.environ.get("DB_PORT", ""),
+    db_host=os.environ.get("DB_HOST", "localhost"),
+    db_port=os.environ.get("DB_PORT", "5432"),
     db_pass=os.environ.get("DB_PASS", ""),
-    db_user=os.environ.get("DB_USER", ""),
-    db_name=os.environ.get("DB_NAME", ""),
+    db_user=os.environ.get("DB_USER", "postgres"),
+    db_name=os.environ.get("DB_NAME", "7up"),
     bot_token=os.environ.get("BOT_TOKEN", ""),
 )
