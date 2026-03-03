@@ -1,4 +1,4 @@
-FROM python:3.10-alpine AS base
+FROM python:3.12-alpine AS base
 
 # Setup env
 ENV LANG C.UTF-8
@@ -22,12 +22,12 @@ RUN apk del build-deps
 
 FROM base AS runtime
 
-# Copy virtual env from python-deps stage
-COPY --from=python-deps /.venv /.venv
-ENV PATH="/.venv/bin:$PATH"
-
 # Install application into container
 COPY . .
 
+# Copy virtual env from python-deps stage
+RUN rm -r /.venv
+COPY --from=python-deps /.venv /.venv
+
 # Run the application
-ENTRYPOINT ["python", "src/main.py"]
+ENTRYPOINT ["/.venv/bin/python", "src/main.py"]

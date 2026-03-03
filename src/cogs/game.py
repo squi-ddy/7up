@@ -33,7 +33,7 @@ class GameCog(commands.Cog):
     @nextcord.slash_command(
         name="bind",
         description="Bind 7up to a text channel.",
-        dm_permission=False,
+        contexts=[nextcord.InteractionContextType.guild],
         default_member_permissions=nextcord.Permissions(manage_channels=True),
     )
     async def bind(
@@ -107,7 +107,7 @@ class GameCog(commands.Cog):
     @nextcord.slash_command(
         name="game",
         description="Choose the game you want to play!",
-        dm_permission=False,
+        contexts=[nextcord.InteractionContextType.guild],
         default_member_permissions=nextcord.Permissions(manage_channels=True),
     )
     async def choose_game(
