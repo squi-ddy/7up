@@ -26,7 +26,6 @@ FROM base AS runtime
 COPY . .
 
 # Copy virtual env from python-deps stage
-RUN rm -r /.venv
 COPY --from=python-deps /.venv /.venv
 
 # Run the application
